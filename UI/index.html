@@ -12,46 +12,46 @@
 </head>
 <body>
 
-<canvas id="c" width="504" height="504" style="border:1px solid #aaa"></canvas>
 
-<div style="display: inline-block; margin-left: 10px">
-  <button id="drawing-mode" class="btn btn-info">Cancel drawing mode</button><br>
-  <button id="clear-canvas" class="btn btn-info">Clear</button><br>
-  <button id="upload" class="btn btn-info">Classify!</button>
+<div class="container">
+	<div class="row">
+		<div class="col-sm">
+			<h2>
+				Draw Digit
+			</h2>
+			<canvas id="c" width="504" height="504" style=" border:1px solid #aaa"></canvas>
+			<div style="display: inline-block; margin-left: 10px">
+			  <button id="drawing-mode" class="btn btn-info" style="margin-top: 10px">Cancel drawing mode</button><br>
+			  <button id="clear-canvas" class="btn btn-info" style="margin-top: 10px">Clear</button><br>
+			  <button id="upload" class="btn btn-info" style="margin-top: 10px">Classify!</button>
 
-  <div id="drawing-mode-options">
-    <!-- <label for="drawing-mode-selector">Mode:</label>
-    <select id="drawing-mode-selector">
-      <option>Pencil</option>
-      <option>Circle</option>
-      <option>Spray</option>
-      <option>Pattern</option>
+			  <div id="drawing-mode-options">
+			    <label for="drawing-line-width">Line width:</label>
+			    <span class="info">55</span><input type="range" value="55" min="50" max="150" id="drawing-line-width"><br>
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-sm">
+			<h2>
+				Prediction
+			</h2>
+				<hr>
+			<p class="lead">
+				The predicted value is :  
+			</p>
+			<p id="pred"></p>
+		</div>
 
-      <option>hline</option>
-      <option>vline</option>
-      <option>square</option>
-      <option>diamond</option>
-      <option>texture</option>
-    </select><br> -->
-
-    <label for="drawing-line-width">Line width:</label>
-    <span class="info">15</span><input type="range" value="15" min="0" max="150" id="drawing-line-width"><br>
-
-    <!-- <label for="drawing-color">Line color:</label>
-    <input type="color" value="#005E7A" id="drawing-color"><br>
-
-    <label for="drawing-shadow-color">Shadow color:</label>
-    <input type="color" value="#005E7A" id="drawing-shadow-color"><br>
-
-    <label for="drawing-shadow-width">Shadow width:</label>
-    <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width"><br>
-
-    <label for="drawing-shadow-offset">Shadow offset:</label>
-    <span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset"><br> -->
-  </div>
+	</div>
 </div>
+
 <br />
 <br />
+
+<div >
+	
+</div>
 
 
 <script src="//stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
@@ -109,6 +109,7 @@ function dataURItoBlob(dataURI) {
   	const formData = new FormData();
   	formData.append('Image', img);
   	const url = "http://127.0.0.1:5000/predict"
+  	// const url = "https://mnist-digit-recognizer-pytorch.herokuapp.com/predict"
   	const options = {
   		method: 'POST',
   		body: formData
@@ -116,9 +117,12 @@ function dataURItoBlob(dataURI) {
 
   	console.log(formData);
   	fetch(url, options)
-  		.then(response => {
-  	  	console.log(response)
-  	})
+  		.then(response => response.json())
+  		.then(body => {
+  			console.log(body.prediction)
+  			var p = $('pred')
+  			p.innerHTML= body.prediction
+  		})
 
   };
   drawingModeEl.onclick = function() {
@@ -132,124 +136,6 @@ function dataURItoBlob(dataURI) {
       drawingOptionsEl.style.display = 'none';
     }
   };
-
-  // if (fabric.PatternBrush) {
-  //   var vLinePatternBrush = new fabric.PatternBrush(canvas);
-  //   vLinePatternBrush.getPatternSrc = function() {
-
-  //     var patternCanvas = fabric.document.createElement('canvas');
-  //     patternCanvas.width = patternCanvas.height = 10;
-  //     var ctx = patternCanvas.getContext('2d');
-
-  //     ctx.strokeStyle = this.color;
-  //     ctx.lineWidth = 5;
-  //     ctx.beginPath();
-  //     ctx.moveTo(0, 5);
-  //     ctx.lineTo(10, 5);
-  //     ctx.closePath();
-  //     ctx.stroke();
-
-  //     return patternCanvas;
-  //   };
-
-  //   var hLinePatternBrush = new fabric.PatternBrush(canvas);
-  //   hLinePatternBrush.getPatternSrc = function() {
-
-  //     var patternCanvas = fabric.document.createElement('canvas');
-  //     patternCanvas.width = patternCanvas.height = 10;
-  //     var ctx = patternCanvas.getContext('2d');
-
-  //     ctx.strokeStyle = this.color;
-  //     ctx.lineWidth = 5;
-  //     ctx.beginPath();
-  //     ctx.moveTo(5, 0);
-  //     ctx.lineTo(5, 10);
-  //     ctx.closePath();
-  //     ctx.stroke();
-
-  //     return patternCanvas;
-  //   };
-
-  //   var squarePatternBrush = new fabric.PatternBrush(canvas);
-  //   squarePatternBrush.getPatternSrc = function() {
-
-  //     var squareWidth = 10, squareDistance = 2;
-
-  //     var patternCanvas = fabric.document.createElement('canvas');
-  //     patternCanvas.width = patternCanvas.height = squareWidth + squareDistance;
-  //     var ctx = patternCanvas.getContext('2d');
-
-  //     ctx.fillStyle = this.color;
-  //     ctx.fillRect(0, 0, squareWidth, squareWidth);
-
-  //     return patternCanvas;
-  //   };
-
-  //   var diamondPatternBrush = new fabric.PatternBrush(canvas);
-  //   diamondPatternBrush.getPatternSrc = function() {
-
-  //     var squareWidth = 10, squareDistance = 5;
-  //     var patternCanvas = fabric.document.createElement('canvas');
-  //     var rect = new fabric.Rect({
-  //       width: squareWidth,
-  //       height: squareWidth,
-  //       angle: 45,
-  //       fill: this.color
-  //     });
-
-  //     var canvasWidth = rect.getBoundingRect().width;
-
-  //     patternCanvas.width = patternCanvas.height = canvasWidth + squareDistance;
-  //     rect.set({ left: canvasWidth / 2, top: canvasWidth / 2 });
-
-  //     var ctx = patternCanvas.getContext('2d');
-  //     rect.render(ctx);
-
-  //     return patternCanvas;
-  //   };
-
-  //   var img = new Image();
-  //   img.src = '../assets/honey_im_subtle.png';
-
-  //   var texturePatternBrush = new fabric.PatternBrush(canvas);
-  //   texturePatternBrush.source = img;
-  // }
-
-  // $('drawing-mode-selector').onchange = function() {
-
-  //   if (this.value === 'hline') {
-  //     canvas.freeDrawingBrush = vLinePatternBrush;
-  //   }
-  //   else if (this.value === 'vline') {
-  //     canvas.freeDrawingBrush = hLinePatternBrush;
-  //   }
-  //   else if (this.value === 'square') {
-  //     canvas.freeDrawingBrush = squarePatternBrush;
-  //   }
-  //   else if (this.value === 'diamond') {
-  //     canvas.freeDrawingBrush = diamondPatternBrush;
-  //   }
-  //   else if (this.value === 'texture') {
-  //     canvas.freeDrawingBrush = texturePatternBrush;
-  //   }
-  //   else {
-  //     canvas.freeDrawingBrush = new fabric[this.value + 'Brush'](canvas);
-  //   }
-
-
-  //   if (canvas.freeDrawingBrush) {
-  //     canvas.freeDrawingBrush.color = drawingColorEl.value;
-  //     canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 20) || 10;
-  //     canvas.freeDrawingBrush.shadow = new fabric.Shadow({
-  //       blur: parseInt(drawingShadowWidth.value, 10) || 0,
-  //       offsetX: 0,
-  //       offsetY: 0,
-  //       affectStroke: true,
-  //       color: drawingShadowColorEl.value,
-  //     });
-  //   }
-  // };
-
    canvas.freeDrawingBrush = new fabric['PencilBrush'](canvas);
    if (canvas.freeDrawingBrush) {
       canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.value, 20) || 10;
