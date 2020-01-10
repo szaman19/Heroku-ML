@@ -67,7 +67,7 @@ def test(model, device, test_loader):
 
 
 def main():
-	device = torch.device("cpu")
+	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 	train_loader = torch.utils.data.DataLoader(
 	    datasets.MNIST('../data', train=True, download=True,
@@ -85,7 +85,7 @@ def main():
 
 	model = Net().to(device)
 	optimizer = optim.Adam(model.parameters())
-	for epoch in range(1, 21):
+	for epoch in range(1, 5):
 		train(model, device, train_loader, optimizer, epoch)
 		test(model, device, test_loader)
 
